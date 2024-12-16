@@ -1,7 +1,7 @@
 import { type PokeballCounts } from "#app/battle-scene";
 import { Gender } from "#app/data/gender";
 import { Variant } from "#app/data/variant";
-import { type ModifierOverride } from "#app/modifier/modifier-type";
+import { BaseStatBoosterModifierType, type ModifierOverride } from "#app/modifier/modifier-type";
 import { Unlockables } from "#app/system/unlockables";
 import { Abilities } from "#enums/abilities";
 import { Biome } from "#enums/biome";
@@ -15,6 +15,8 @@ import { StatusEffect } from "#enums/status-effect";
 import { TimeOfDay } from "#enums/time-of-day";
 import { VariantTier } from "#enums/variant-tier";
 import { WeatherType } from "#enums/weather-type";
+import { Stat } from "./enums/stat";
+import { MegaEvolutionAccessModifier } from "./modifier/modifier";
 
 /**
  * Overrides that are using when testing different in game situations
@@ -63,23 +65,23 @@ class DefaultOverrides {
   readonly STARTING_BIOME_OVERRIDE: Biome = Biome.TOWN;
   readonly ARENA_TINT_OVERRIDE: TimeOfDay | null = null;
   /** Multiplies XP gained by this value including 0. Set to null to ignore the override */
-  readonly XP_MULTIPLIER_OVERRIDE: number | null = null;
+  readonly XP_MULTIPLIER_OVERRIDE: number = 5;
   readonly NEVER_CRIT_OVERRIDE: boolean = false;
   /** default 1000 */
-  readonly STARTING_MONEY_OVERRIDE: number = 0;
+  readonly STARTING_MONEY_OVERRIDE: number = 50000000;
   /** Sets all shop item prices to 0 */
-  readonly WAIVE_SHOP_FEES_OVERRIDE: boolean = false;
+  readonly WAIVE_SHOP_FEES_OVERRIDE: boolean = true;
   /** Sets reroll price to 0 */
-  readonly WAIVE_ROLL_FEE_OVERRIDE: boolean = false;
-  readonly FREE_CANDY_UPGRADE_OVERRIDE: boolean = false;
+  readonly WAIVE_ROLL_FEE_OVERRIDE: boolean = true;
+  readonly FREE_CANDY_UPGRADE_OVERRIDE: boolean = true;
   readonly POKEBALL_OVERRIDE: { active: boolean; pokeballs: PokeballCounts } = {
     active: false,
     pokeballs: {
-      [PokeballType.POKEBALL]: 5,
+      [PokeballType.POKEBALL]: 50,
       [PokeballType.GREAT_BALL]: 0,
       [PokeballType.ULTRA_BALL]: 0,
       [PokeballType.ROGUE_BALL]: 0,
-      [PokeballType.MASTER_BALL]: 0,
+      [PokeballType.MASTER_BALL]: 999,
     },
   };
   /** Forces an item to be UNLOCKED */
@@ -107,30 +109,30 @@ class DefaultOverrides {
   readonly STARTER_FORM_OVERRIDES: Partial<Record<Species, number>> = {};
 
   /** default 5 or 20 for Daily */
-  readonly STARTING_LEVEL_OVERRIDE: number = 0;
+  readonly STARTING_LEVEL_OVERRIDE: number = 500;
   /**
    * SPECIES OVERRIDE
    * will only apply to the first starter in your party or each enemy pokemon
    * default is 0 to not override
    * @example SPECIES_OVERRIDE = Species.Bulbasaur;
    */
-  readonly STARTER_SPECIES_OVERRIDE: Species | number = 0;
+  readonly STARTER_SPECIES_OVERRIDE: Species.RAYQUAZA;
   /**
    * This will force your starter to be a random fusion
    */
-  readonly STARTER_FUSION_OVERRIDE: boolean = false;
+  readonly STARTER_FUSION_OVERRIDE: boolean = true;
   /**
    * This will override the species of the fusion
    */
-  readonly STARTER_FUSION_SPECIES_OVERRIDE: Species | integer = 0;
-  readonly ABILITY_OVERRIDE: Abilities = Abilities.NONE;
-  readonly PASSIVE_ABILITY_OVERRIDE: Abilities = Abilities.NONE;
+  readonly STARTER_FUSION_SPECIES_OVERRIDE: Species.ETERNATUS;
+  readonly ABILITY_OVERRIDE: Abilities = Abilities.AIR_LOCK;
+  readonly PASSIVE_ABILITY_OVERRIDE: Abilities = Abilities.LEVITATE;
   readonly STATUS_OVERRIDE: StatusEffect = StatusEffect.NONE;
   readonly GENDER_OVERRIDE: Gender | null = null;
-  readonly MOVESET_OVERRIDE: Moves | Array<Moves> = [];
-  readonly SHINY_OVERRIDE: boolean | null = null;
-  readonly VARIANT_OVERRIDE: Variant | null = null;
-
+  readonly MOVESET_OVERRIDE: Moves | Array<Moves> = [Moves.ETERNABEAM, Moves.EARTHQUAKE, Moves.PSYCHIC, Moves.PRISMATIC_LASER];
+  readonly SHINY_OVERRIDE: boolean = true;
+  readonly VARIANT_OVERRIDE: Variant = VariantTier.EPIC;
+  readonly STAT_OVERIDE: Stat | Array<Stat> = [Stat.HP, Stat.ATK, Stat.DEF, Stat.SPATK, Stat.SPDEF, Stat.SPD, Stat.EVA, Stat.ACC]
   // --------------------------
   // OPPONENT / ENEMY OVERRIDES
   // --------------------------
@@ -142,7 +144,7 @@ class DefaultOverrides {
   /**
    * This will override the species of the fusion only when the opponent is already a fusion
    */
-  readonly OPP_FUSION_SPECIES_OVERRIDE: Species | integer = 0;
+  readonly OPP_FUSION_SPECIES_OVERRIDE: Species | number = 0;
   readonly OPP_LEVEL_OVERRIDE: number = 0;
   readonly OPP_ABILITY_OVERRIDE: Abilities = Abilities.NONE;
   readonly OPP_PASSIVE_ABILITY_OVERRIDE: Abilities = Abilities.NONE;
@@ -165,12 +167,12 @@ class DefaultOverrides {
   // -------------
   // EGG OVERRIDES
   // -------------
-  readonly EGG_IMMEDIATE_HATCH_OVERRIDE: boolean = false;
-  readonly EGG_TIER_OVERRIDE: EggTier | null = null;
-  readonly EGG_SHINY_OVERRIDE: boolean = false;
-  readonly EGG_VARIANT_OVERRIDE: VariantTier | null = null;
-  readonly EGG_FREE_GACHA_PULLS_OVERRIDE: boolean = false;
-  readonly EGG_GACHA_PULL_COUNT_OVERRIDE: number = 0;
+  readonly EGG_IMMEDIATE_HATCH_OVERRIDE: boolean = true;
+  readonly EGG_TIER_OVERRIDE: EggTier.LEGENDARY;
+  readonly EGG_SHINY_OVERRIDE: boolean = true;
+  readonly EGG_VARIANT_OVERRIDE: VariantTier.EPIC;
+  readonly EGG_FREE_GACHA_PULLS_OVERRIDE: boolean = true;
+  readonly EGG_GACHA_PULL_COUNT_OVERRIDE: number = 10;
   readonly UNLIMITED_EGG_COUNT_OVERRIDE: boolean = false;
 
   // -------------------------
@@ -216,7 +218,25 @@ class DefaultOverrides {
    * STARTING_HELD_ITEM_OVERRIDE = [{name: "BERRY"}]
    * ```
    */
-  readonly STARTING_MODIFIER_OVERRIDE: ModifierOverride[] = [];
+  readonly STARTING_MODIFIER_OVERRIDE: ModifierOverride[] = [
+    {name: "EXP_SHARE", count: 5}
+    ,{name: "ABILITY_CHARM", count: 5}
+    ,{name: "CANDY_JAR", count: 499}
+    ,{name: "DYNAMAX_BAND"}
+    ,{name: "EXP_CHARM", count: 500}
+    ,{name: "SUPER_EXP_CHARM", count: 500}
+    ,{name: "GRIP_CLAW", count: 10}
+    ,{name: "MINI_BLACK_HOLE", count: 15}
+    ,{name: "GOLDEN_EGG", count: 5}
+    ,{name: "GOLDEN_EXP_CHARM", count: 10}
+    ,{name: "GOLDEN_POKEBALL", count: 5}
+    ,{name: "GOLDEN_PUNCH", count: 10}
+    ,{name: "LOCK_CAPSULE"}
+    ,{name: "MAP"}
+    ,{name: "MEGA_BRACELET"}
+    ,{name: "SHINY_CHARM", count: 5}
+    ,{name: "TERA_ORB"}
+  ];
   /**
    * Override array of {@linkcode ModifierOverride}s used to provide modifiers to enemies.
    *
@@ -225,7 +245,18 @@ class DefaultOverrides {
   readonly OPP_MODIFIER_OVERRIDE: ModifierOverride[] = [];
 
   /** Override array of {@linkcode ModifierOverride}s used to provide held items to first party member when starting a new game. */
-  readonly STARTING_HELD_ITEMS_OVERRIDE: ModifierOverride[] = [];
+  readonly STARTING_HELD_ITEMS_OVERRIDE: ModifierOverride[] = [
+    {name: "BASE_STAT_BOOSTER", type: Stat.HP, count: 20}
+    ,{name: "BASE_STAT_BOOSTER", type: Stat.ATK, count: 20}
+    ,{name: "BASE_STAT_BOOSTER", type: Stat.DEF, count: 20}
+    ,{name: "BASE_STAT_BOOSTER", type: Stat.SPATK, count: 20}
+    ,{name: "BASE_STAT_BOOSTER", type: Stat.SPDEF, count: 20}
+    ,{name: "BASE_STAT_BOOSTER", type: Stat.SPD, count: 20}
+    ,{name: "BASE_STAT_BOOSTER", type: Stat.EVA, count: 20}
+    ,{name: "BASE_STAT_BOOSTER", type: Stat.ACC, count: 20}
+    ,{name: "AMULET_COIN", count: 5}
+    ,{name: "RARE_EVOLUTION_ITEM", type: EvolutionItem.}
+  ];
   /** Override array of {@linkcode ModifierOverride}s used to provide held items to enemies on spawn. */
   readonly OPP_HELD_ITEMS_OVERRIDE: ModifierOverride[] = [];
 
