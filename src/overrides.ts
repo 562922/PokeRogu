@@ -15,6 +15,7 @@ import { StatusEffect } from "#enums/status-effect";
 import { TimeOfDay } from "#enums/time-of-day";
 import { VariantTier } from "#enums/variant-tier";
 import { WeatherType } from "#enums/weather-type";
+import { EvolutionItem } from "./data/balance/pokemon-evolutions";
 import { Stat } from "./enums/stat";
 import { MegaEvolutionAccessModifier } from "./modifier/modifier";
 
@@ -233,7 +234,9 @@ class DefaultOverrides {
     ,{name: "GOLDEN_PUNCH", count: 10}
     ,{name: "LOCK_CAPSULE"}
     ,{name: "MAP"}
+    ,{name: "AMULET_COIN", count: 5}
     ,{name: "MEGA_BRACELET"}
+    ,{name: "DYNAMAX_BAND"}
     ,{name: "SHINY_CHARM", count: 5}
     ,{name: "TERA_ORB"}
   ];
@@ -254,7 +257,6 @@ class DefaultOverrides {
     ,{name: "BASE_STAT_BOOSTER", type: Stat.SPD, count: 20}
     ,{name: "BASE_STAT_BOOSTER", type: Stat.EVA, count: 20}
     ,{name: "BASE_STAT_BOOSTER", type: Stat.ACC, count: 20}
-    ,{name: "AMULET_COIN", count: 5}
     ,{name: "RARE_EVOLUTION_ITEM", type: EvolutionItem.}
   ];
   /** Override array of {@linkcode ModifierOverride}s used to provide held items to enemies on spawn. */
