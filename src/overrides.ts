@@ -257,7 +257,6 @@ class DefaultOverrides {
     ,{name: "BASE_STAT_BOOSTER", type: Stat.SPD, count: 20}
     ,{name: "BASE_STAT_BOOSTER", type: Stat.EVA, count: 20}
     ,{name: "BASE_STAT_BOOSTER", type: Stat.ACC, count: 20}
-    ,{name: "RARE_EVOLUTION_ITEM", type: EvolutionItem.}
   ];
   /** Override array of {@linkcode ModifierOverride}s used to provide held items to enemies on spawn. */
   readonly OPP_HELD_ITEMS_OVERRIDE: ModifierOverride[] = [];
